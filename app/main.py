@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from typing import Optional
+
 BOOKS = [
     {
         "id" : 1,
@@ -17,6 +19,14 @@ BOOKS = [
         "genre" : ["Nonfiction", "Psychology", "Sociology", "Urban Planning"],
         "numberofpages" : 260,
     },
+    {
+        "id" : 3,
+        "title" : "Patriot Games",
+        "authors" : ["Tom Clancy"],
+        "rating" : 4.15,
+        "genre" : ["Fiction", "Thriller", "Mystery", "Suspense"],
+        "numberofpages" : 260,
+    },
 
 ]
 
@@ -29,4 +39,21 @@ async def root() -> dict:
 @app.get("/books", status_code=200)
 async def get_books() -> dict:
     result = [book for book in BOOKS]
+    return {"books" : result}
+
+@app.get("/book/{book_id}", status_code=200)
+async def get_book_by_id(book_id:int) -> dict:
+    result = [ book for book in BOOKS if book["id"] == book_id]
+    return {"book" : result}
+
+@app.get("/books/search", status_code=200)
+async def search_by_author_or_genre(keyword: Optional[str] = None, \
+    max_results: Optional[int] = 5) -> dict:
+
+    if not keyword:
+        return BOOKS[:max_results]
+
+    result = [book for book in BOOKS if any(keyword.lower() in authors.lower() for authors in book["authors"])] \
+            or [book for book in BOOKS if any(keyword.lower() in genre.lower() for genre in book["genre"])]
+
     return {"books" : result}
