@@ -33,7 +33,7 @@ async def search_by_author_or_genre(keyword: Optional[str] = None, \
             or [book for book in BOOKS if any(keyword.lower() in genre.lower() \
                 for genre in book["genre"])]
 
-    if len(result) == 0:
+    if not result:
         raise HTTPException(status_code=404, \
             detail=f"Sorry, no books match your search criteria of {keyword}!")
 
@@ -58,7 +58,7 @@ async def create_book(book: BookCreate) -> dict:
 async def update_book(book_id:int, updated_book: BookUpdate) -> dict:
     book = list(filter(lambda item: item['id'] == book_id, BOOKS))
 
-    if len(book) == 0:
+    if not book:
         raise HTTPException(status_code=404, detail=f"Book with id {book_id} not found!")
     else:
         book[0]["title"] = updated_book.title
