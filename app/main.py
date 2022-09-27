@@ -1,34 +1,9 @@
 from fastapi import FastAPI
 
+from data import BOOKS
+from schemas import Book, BookCreate, BookUpdate
+
 from typing import Optional
-
-BOOKS = [
-    {
-        "id" : 1,
-        "title" : "Nudge: Improving Decisions About Health, Wealth, and Happiness",
-        "authors" : ["Richard H.Taler", "Cass R.Sunstein"],
-        "rating" : 3.83,
-        "genre" : ["Nonfiction", "Psychology", "Economics", "Self Help"],
-        "numberofpages" : 260,
-    },
-    {
-        "id" : 2,
-        "title" : "Traffic: Why We Drive the Way We Do and What It Says About Us",
-        "authors" : ["Tom Vanderbilt"],
-        "rating" : 3.72,
-        "genre" : ["Nonfiction", "Psychology", "Sociology", "Urban Planning"],
-        "numberofpages" : 260,
-    },
-    {
-        "id" : 3,
-        "title" : "Patriot Games",
-        "authors" : ["Tom Clancy"],
-        "rating" : 4.15,
-        "genre" : ["Fiction", "Thriller", "Mystery", "Suspense"],
-        "numberofpages" : 260,
-    },
-
-]
 
 app = FastAPI(title="Mindful API", openapi_url="/openapi.json")
 
@@ -46,14 +21,40 @@ async def get_book_by_id(book_id:int) -> dict:
     result = [ book for book in BOOKS if book["id"] == book_id]
     return {"book" : result}
 
-@app.get("/books/search", status_code=200)
+@app.get("/books/search/", status_code=200)
 async def search_by_author_or_genre(keyword: Optional[str] = None, \
     max_results: Optional[int] = 5) -> dict:
 
     if not keyword:
         return BOOKS[:max_results]
 
-    result = [book for book in BOOKS if any(keyword.lower() in authors.lower() for authors in book["authors"])] \
-            or [book for book in BOOKS if any(keyword.lower() in genre.lower() for genre in book["genre"])]
+    result = [book for book in BOOKS if any(keyword.lower() in authors.lower() \
+                for authors in book["authors"])] \
+            or [book for book in BOOKS if any(keyword.lower() in genre.lower() \
+                for genre in book["genre"])]
 
     return {"books" : result}
+
+@app.post("/book/", status_code=201, response_model=Book)
+def create_book(book: BookCreate) -> dict:
+    id = len(BOOKS) + 1
+    book = Book(
+        id = id,
+        title = book.title,
+        authors = book.authors,
+        rating = book.rating,
+        genre = book.genre,
+        numberofpages = book.numberofpages
+    )
+    BOOKS.append(book.dict())
+
+    return book
+
+@app.put("/book/{book_id}", status_code=200, response_model=Book)
+def update_book(book_id:int, updated_book: BookUpdate) -> dict:
+    book = list(filter(lambda item: item['id'] == book_id, BOOKS))
+
+    book[0]["title"] = updated_book.title
+    book[0]["genre"] = updated_book.genre
+
+    return book[0]
