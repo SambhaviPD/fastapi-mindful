@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from data import BOOKS
 from schemas import Book, BookCreate, BookUpdate
@@ -33,10 +33,14 @@ async def search_by_author_or_genre(keyword: Optional[str] = None, \
             or [book for book in BOOKS if any(keyword.lower() in genre.lower() \
                 for genre in book["genre"])]
 
+    if len(result) == 0:
+        raise HTTPException(status_code=404, \
+            detail=f"Sorry, no books match your search criteria of {keyword}!")
+
     return {"books" : result}
 
 @app.post("/book/", status_code=201, response_model=Book)
-def create_book(book: BookCreate) -> dict:
+async def create_book(book: BookCreate) -> dict:
     id = len(BOOKS) + 1
     book = Book(
         id = id,
@@ -51,10 +55,18 @@ def create_book(book: BookCreate) -> dict:
     return book
 
 @app.put("/book/{book_id}", status_code=200, response_model=Book)
-def update_book(book_id:int, updated_book: BookUpdate) -> dict:
+async def update_book(book_id:int, updated_book: BookUpdate) -> dict:
     book = list(filter(lambda item: item['id'] == book_id, BOOKS))
 
-    book[0]["title"] = updated_book.title
-    book[0]["genre"] = updated_book.genre
+    if len(book) == 0:
+        raise HTTPException(status_code=404, detail=f"Book with id {book_id} not found!")
+    else:
+        book[0]["title"] = updated_book.title
+        book[0]["genre"] = updated_book.genre
+        return book[0]
 
-    return book[0]
+@app.delete("/book/{book_id}", status_code=204)
+async def delete_book(book_id: int):
+    book = list(filter(lambda item: item['id'] == book_id, BOOKS))
+
+    BOOKS.remove(book[0])
