@@ -1,27 +1,45 @@
-BOOKS = [
+AUTHORS = [
     {
         "id" : 1,
-        "title" : "Nudge: Improving Decisions About Health, Wealth, and Happiness",
-        "authors" : ["Richard H.Taler", "Cass R.Sunstein"],
-        "rating" : 3.83,
-        "genre" : ["Nonfiction", "Psychology", "Economics", "Self Help"],
-        "numberofpages" : 260,
+        "name" : "Yann Martel",
+        "genre" : ["Fiction"],
     },
     {
         "id" : 2,
-        "title" : "Traffic: Why We Drive the Way We Do and What It Says About Us",
-        "authors" : ["Tom Vanderbilt"],
-        "rating" : 3.72,
-        "genre" : ["Nonfiction", "Psychology", "Sociology", "Urban Planning"],
-        "numberofpages" : 260,
+        "name" : "Mark Haddon",
+        "genre" : ["Children's", "Fiction"],
     },
     {
         "id" : 3,
-        "title" : "Patriot Games",
-        "authors" : ["Tom Clancy"],
+        "name" : "Vikram Seth",
+        "genre" : ["Literature & Fiction", "Biographies & Memoirs", "Poetry"],
+    },
+]
+
+BOOKS = [
+    {
+        "id" : 1,
+        "title" : "Life of Pi",
+        "authors" : [1],
+        "rating" : 3.93,
+        "genre" : ["Fiction", "Fantasy", "Classics", "Contemporary"],
+        "numberofpages" : 460,
+    },
+    {
+        "id" : 2,
+        "title" : "The Curious Incident of the Dog in the Night-Time",
+        "authors" : [2],
+        "rating" : 3.89,
+        "genre" : ["Fiction", "Mystery", "Young Adult", "Contemporary"],
+        "numberofpages" : 226,
+    },
+    {
+        "id" : 3,
+        "title" : "A Suitble Boy",
+        "authors" : [3],
         "rating" : 4.15,
-        "genre" : ["Fiction", "Thriller", "Mystery", "Suspense"],
-        "numberofpages" : 260,
+        "genre" : ["Fiction", "Historical Fiction", "Romance", "Indian Literature"],
+        "numberofpages" : 1474,
     },
 
 ]
